@@ -1,4 +1,6 @@
 using Toybox.Math;
+using Toybox.WatchUi as Ui;
+
 class CiqView extends ExtramemView {  
 	var mfillColour 						= Graphics.COLOR_LT_GRAY;
 	var counterPower 						= 0;
@@ -33,7 +35,6 @@ class CiqView extends ExtramemView {
 	var i 									= 0;
 	var hideText 							= false;
 	var jDistance 							= 0;
-	var uspikeTreshold						= 2000;
 	var runPower							= 0;
 	var lastsrunPower						= 0;
 	var sethideText 						= false;
@@ -48,6 +49,18 @@ class CiqView extends ExtramemView {
 	var fieldvalue;
 	var WU;
 	hidden var uLapPwr4alerts 				= false;
+	var Garminfont = Ui.loadResource(Rez.Fonts.Garmin1);
+	var Garminfontgroot = Ui.loadResource(Rez.Fonts.Garmin4);
+	var Power1 									= 0;
+    var Power2 									= 0;
+    var Power3 									= 0;	
+	var Power4 									= 0;
+    var Power5 									= 0;
+    var Power6 									= 0;
+	var Power7 									= 0;
+    var Power8 									= 0;
+    var Power9 									= 0;
+    var Power10									= 0;
 		
     function initialize() {
         ExtramemView.initialize();
@@ -60,13 +73,19 @@ class CiqView extends ExtramemView {
 		uCP		 	 	 = mApp.getProperty("pCP");
 		uWorkoutType	 = mApp.getProperty("pWorkoutType");
 		uWorkoutzones	 = mApp.getProperty("pWorkoutzones");
-		uspikeTreshold	 = mApp.getProperty("pspikeTreshold");
 		uLapPwr4alerts    = mApp.getProperty("pLapPwr4alerts");
 		i = 0; 
 	    for (i = 1; i < 7; ++i) {		
 			if (metric[i] == 57 or metric[i] == 58 or metric[i] == 59) {
 				rolavPowmaxsecs = (rolavPowmaxsecs < 30) ? 30 : rolavPowmaxsecs;
 			}
+		if (ID0 == 3588 or ID0 == 3832 or ID0 == 3624 or ID0 == 3952 or ID0 == 3762 or ID0 == 3962 or ID0 == 3761 or ID0 == 3961 or ID0 == 3757 or ID0 == 3931 or ID0 == 3758 or ID0 == 3932 or ID0 == 3759 or ID0 == 3959 or ID0 == 3798 or ID0 == 4023 or ID0 == 3799 or ID0 == 4024) {
+			Garminfont = Ui.loadResource(Rez.Fonts.Garmin1);		
+		} else if (ID0 == 3801 or ID0 == 4026 ) {
+			Garminfont = Ui.loadResource(Rez.Fonts.Garmin2);
+		} else if (ID0 == 3802 or ID0 == 4027 ) {
+			Garminfont = Ui.loadResource(Rez.Fonts.Garmin3);
+		}
 		}		
 		
 		//!Workout variables setup
@@ -94,10 +113,8 @@ class CiqView extends ExtramemView {
             mHeartrateTime	 = (info.currentHeartRate != null) ? mHeartrateTime+1 : mHeartrateTime;				
            	mElapsedHeartrate= (info.currentHeartRate != null) ? mElapsedHeartrate + info.currentHeartRate : mElapsedHeartrate;
             //!Calculate lappower
-            mPowerTime		 = (info.currentPower != null) ? mPowerTime+1 : mPowerTime;
-//!temporary solution for power spikes > spikeTreshold Watt 		
+            mPowerTime		 = (info.currentPower != null) ? mPowerTime+1 : mPowerTime;	
             runPower 		 = (info.currentPower != null) ? info.currentPower : 0;
-            runPower 		 = (runPower > uspikeTreshold) ? lastsrunPower : runPower;
 		 	if ( uLapPwr4alerts == true ) {
 		    	runalertPower 	 = LapPower;
 		    } else {
@@ -143,7 +160,7 @@ class CiqView extends ExtramemView {
     						if (vibrateseconds == uWarningFreq) {
     							Toybox.Attention.vibrate(vibrateData);
     							if (uAlertbeep == true) {
-    								Attention.playTone(Attention.TONE_KEY);
+    								Attention.playTone(Attention.TONE_ALERT_HI);
 		    					}
     							vibrateseconds = 0;
     						}
@@ -151,7 +168,7 @@ class CiqView extends ExtramemView {
     						setPowerWarning = 2;
     						if (vibrateseconds == uWarningFreq) {
     							if (uAlertbeep == true) {
-    								Attention.playTone(Attention.TONE_LOUD_BEEP);
+    								Attention.playTone(Attention.TONE_ALERT_LO);
 	    						}
     						Toybox.Attention.vibrate(vibrateData);
     						vibrateseconds = 0;
@@ -166,24 +183,30 @@ class CiqView extends ExtramemView {
 				} else {
 					TimeToNextStep = 0;
 				}
-				DistanceToNextStep = (mWorkoutType[mWorkoutstepNumber].equals("t")) ? (nextAlertT-jTimertime)*CurrentSpeedinmpersec/1000 : (nextAlertD-jDistance);
+				DistanceToNextStep = (mWorkoutType[mWorkoutstepNumber].equals("t")) ? (nextAlertT-jTimertime)*CurrentSpeedinmpersec : (nextAlertD-jDistance);
 				PowerTargetThisStep = Math.round((mWorkoutLzone[mWorkoutstepNumber].toNumber() + mWorkoutHzone[mWorkoutstepNumber].toNumber())/2).toNumber();
 				TimeToNextStep = (TheEnd == true ) ? 0 : TimeToNextStep; 
 				DistanceToNextStep = (TheEnd == true ) ? 0 : DistanceToNextStep; 
 				PowerTargetThisStep = (TheEnd == true ) ? 0 : PowerTargetThisStep; 
 				
 				workoutUnit = (mWorkoutType[mWorkoutstepNumber+1].equals("t")) ? "sec" : "met";
-				mWorkoutstepNumber = (mWorkoutAmount[mWorkoutstepNumber+1].equals("0000") == false) ? mWorkoutstepNumber : 18;
+				if (mWorkoutAmount[mWorkoutstepNumber+1].equals("0000") == false) {
+					mWorkoutstepNumber = mWorkoutstepNumber;
+				} else {
+					if (TimeToNextStep < 2) {
+						mWorkoutstepNumber = 18;
+					}
+				}
 				if (nextAlertType.equals("t")) {
 					if (nextAlertT > jTimertime+5 and nextAlertT < jTimertime+10) {      //! Notification nearing the end of a time-based step 	
 					  if (mWorkoutstepNumber < 18) {				
 						Toybox.Attention.vibrate(vibrateData);
-						Attention.playTone(Attention.TONE_LOUD_BEEP);
-						Attention.playTone(Attention.TONE_KEY);
+						Attention.playTone(Attention.TONE_ALERT_LO);
+						Attention.playTone(Attention.TONE_ALERT_HI);
 					  } else if (mWorkoutstepNumber == 18) {				
 						Toybox.Attention.vibrate(vibrateData);
-						Attention.playTone(Attention.TONE_LOUD_BEEP);
-						Attention.playTone(Attention.TONE_KEY);
+						Attention.playTone(Attention.TONE_ALERT_LO);
+						Attention.playTone(Attention.TONE_ALERT_HI);
 					  }
 					}
 				}			
@@ -191,12 +214,12 @@ class CiqView extends ExtramemView {
 					if (nextAlertD > jDistance+5*CurrentSpeedinmpersec and nextAlertD < jDistance+10*CurrentSpeedinmpersec) {       //! Notification nearing the end of a distance-based step
 					  if (mWorkoutstepNumber < 18) {				
 						Toybox.Attention.vibrate(vibrateData);
-						Attention.playTone(Attention.TONE_LOUD_BEEP);
-						Attention.playTone(Attention.TONE_KEY);
+						Attention.playTone(Attention.TONE_ALERT_LO);
+						Attention.playTone(Attention.TONE_ALERT_HI);
 					  } else if (mWorkoutstepNumber == 18){				
 						Toybox.Attention.vibrate(vibrateData);
-						Attention.playTone(Attention.TONE_LOUD_BEEP);
-						Attention.playTone(Attention.TONE_KEY);
+						Attention.playTone(Attention.TONE_ALERT_LO);
+						Attention.playTone(Attention.TONE_ALERT_HI);
 					  }
 					}
 				 
@@ -238,23 +261,25 @@ class CiqView extends ExtramemView {
 
     //! Store last lap quantities and set lap markers after a lap
     function onTimerLap() {
-        var info = Activity.getActivityInfo();
-        mLastLapTimerTime       	= jTimertime - mLastLapTimeMarker;
-        mLastLapElapsedDistance 	= (info.elapsedDistance != null) ? info.elapsedDistance - mLastLapDistMarker : 0;
-        mLastLapDistMarker      	= (info.elapsedDistance != null) ? info.elapsedDistance : 0;
-        mLastLapTimeMarker      	= jTimertime;
+        if (NoLapEffect == false) {
+	        var info = Activity.getActivityInfo();
+    	    mLastLapTimerTime       	= jTimertime - mLastLapTimeMarker;
+        	mLastLapElapsedDistance 	= (info.elapsedDistance != null) ? info.elapsedDistance - mLastLapDistMarker : 0;
+	        mLastLapDistMarker      	= (info.elapsedDistance != null) ? info.elapsedDistance : 0;
+    	    mLastLapTimeMarker      	= jTimertime;
 
-        mLastLapTimerTimeHR			= mHeartrateTime - mLastLapTimeHRMarker;
-        mLastLapElapsedHeartrate 	= (info.currentHeartRate != null) ? mElapsedHeartrate - mLastLapHeartrateMarker : 0;
-        mLastLapHeartrateMarker     = mElapsedHeartrate;
-        mLastLapTimeHRMarker        = mHeartrateTime;
+        	mLastLapTimerTimeHR			= mHeartrateTime - mLastLapTimeHRMarker;
+	        mLastLapElapsedHeartrate 	= (info.currentHeartRate != null) ? mElapsedHeartrate - mLastLapHeartrateMarker : 0;
+    	    mLastLapHeartrateMarker     = mElapsedHeartrate;
+        	mLastLapTimeHRMarker        = mHeartrateTime;
 
-        mLastLapTimerTimePwr		= mPowerTime - mLastLapTimePwrMarker;
-        mLastLapElapsedPower  		= (info.currentPower != null) ? mElapsedPower - mLastLapPowerMarker : 0;
-        mLastLapPowerMarker         = mElapsedPower;
-        mLastLapTimePwrMarker       = mPowerTime;        
+	        mLastLapTimerTimePwr		= mPowerTime - mLastLapTimePwrMarker;
+    	    mLastLapElapsedPower  		= (info.currentPower != null) ? mElapsedPower - mLastLapPowerMarker : 0;
+        	mLastLapPowerMarker         = mElapsedPower;
+	        mLastLapTimePwrMarker       = mPowerTime;        
 
-        mLaps++;
+    	    mLaps++;
+    	}
 	}
 
 
@@ -319,8 +344,6 @@ class CiqView extends ExtramemView {
 		}
 		counterPower = counterPower + 1;
 		rollingPwrValue [rolavPowmaxsecs+1] = (info.currentPower != null) ? info.currentPower : 0;
-//!temporary solution for power spikes > spikeTreshold Wat 		
-		rollingPwrValue [rolavPowmaxsecs+1] = (rollingPwrValue [rolavPowmaxsecs+1] > uspikeTreshold) ? rollingPwrValue [rolavPowmaxsecs] : rollingPwrValue [rolavPowmaxsecs+1];
 		FilteredCurPower = rollingPwrValue [rolavPowmaxsecs+1]; 
 		for (var i = 1; i < rolavPowmaxsecs+1; ++i) {
 			rollingPwrValue[i] = rollingPwrValue[i+1];
@@ -338,6 +361,35 @@ class CiqView extends ExtramemView {
 			Averagepowerpersec = (mPowerTime < rolavPowmaxsecs) ? totalRPw/(rolavPowmaxsecs-zeroValueSecs) : totalRPw/rolavPowmaxsecs;
 		}
 		totalRPw = 0;       
+		
+		//!Calculate 5 and 10sec averaged power
+        var AveragePower5sec  	 			= 0;
+        var AveragePower10sec  	 			= 0;
+        var currentPowertest				= 0;
+		if (info.currentSpeed != null && info.currentPower != null) {
+        	currentPowertest = info.currentPower; 
+        }
+        if (currentPowertest > 0) {
+            if (currentPowertest > 0) {
+				if (info.currentPower != null) {
+        			Power1								= info.currentPower; 
+        		} else {
+        			Power1								= 0;
+				}
+        		Power10 							= Power9;
+        		Power9 								= Power8;
+        		Power8 								= Power7;
+        		Power7 								= Power6;
+        		Power6 								= Power5;
+        		Power5 								= Power4;
+        		Power4 								= Power3;
+        		Power3 								= Power2;
+        		Power2 								= Power1;
+				AveragePower10sec= (Power1+Power2+Power3+Power4+Power5+Power6+Power7+Power8+Power9+Power10)/10;
+				AveragePower5sec= (Power1+Power2+Power3+Power4+Power5)/5;
+				AveragePower3sec	= (Power1+Power2+Power3)/3;
+			}
+ 		}
 
 		//!Calculate normalized power
 		var mNormalizedPow = 0;
@@ -418,17 +470,19 @@ class CiqView extends ExtramemView {
 				}	
 				if (jTimertime == oldnextAlertT and nextAlertType.equals("t")) {			//! Setting up next alert at the end of a time-based step
 						Workoutstepalert(dc);
+						onWorkoutStepComplete();
 				}
 				if ( jDistance > oldnextAlertD and nextAlertType.equals("d")) {			//! Setting up next alert at the end of a distance-based step			 
 					if (oldnextAlertD < jDistance + CurrentSpeedinmpersec) {
 						Workoutstepalert(dc);
+						onWorkoutStepComplete();
 					}  
 				}		
 			}			
 		}
 		dc.setColor(mColourFont, Graphics.COLOR_TRANSPARENT);
 
-
+		var Actualpower = (info.currentPower != null) ? info.currentPower : 0;
 		i = 0; 
 	    for (i = 1; i < 7; ++i) {
 	        if (metric[i] == 38) {
@@ -479,6 +533,14 @@ class CiqView extends ExtramemView {
 	            fieldValue[i] = CurrentPower2HRRatio;
     	        fieldLabel[i] = "C P2HR";
         	    fieldFormat[i] = "2decimal";
+        	} else if (metric[i] == 70) {
+    	        fieldValue[i] = AveragePower5sec;
+        	    fieldLabel[i] = "Pwr 5s";
+            	fieldFormat[i] = "power";
+			} else if (metric[i] == 39) {
+    	        fieldValue[i] = AveragePower10sec;
+        	    fieldLabel[i] = "Pwr 10s";
+            	fieldFormat[i] = "power";
 			} else if (metric[i] == 37) {
 	            fieldValue[i] = Averagepowerpersec;
     	        fieldLabel[i] = "Pw ..sec";
@@ -487,6 +549,42 @@ class CiqView extends ExtramemView {
 	            fieldValue[i] = mNormalizedPow;
     	        fieldLabel[i] = "N Power";
         	    fieldFormat[i] = "0decimal";
+        	} else if (metric[i] == 80) {
+    	        fieldValue[i] = (info.maxPower != null) ? info.maxPower : 0;
+        	    fieldLabel[i] = "Max Pwr";
+            	fieldFormat[i] = "power";
+        	} else if (metric[i] == 71) {
+            	fieldValue[i] = (uFTP != 0) ? Actualpower*100/uFTP : 0;
+            	fieldLabel[i] = "%FTP";
+            	fieldFormat[i] = "power";   
+	        } else if (metric[i] == 72) {
+    	        fieldValue[i] = (uFTP != 0) ? AveragePower3sec*100/uFTP : 0;
+        	    fieldLabel[i] = "%FTP 3s";
+            	fieldFormat[i] = "power";
+			} else if (metric[i] == 73) {
+    	        fieldValue[i] = (uFTP != 0) ? LapPower*100/uFTP : 0;
+        	    fieldLabel[i] = "L %FTP";
+            	fieldFormat[i] = "power";
+			} else if (metric[i] == 74) {
+        	    fieldValue[i] = (uFTP != 0) ? LastLapPower*100/uFTP : 0;
+            	fieldLabel[i] = "LL %FTP";
+            	fieldFormat[i] = "power";
+	        } else if (metric[i] == 75) {
+    	        fieldValue[i] = (uFTP != 0) ? AveragePower*100/uFTP : 0;
+        	    fieldLabel[i] = "A %FTP";
+            	fieldFormat[i] = "power";  
+	        } else if (metric[i] == 76) {
+    	        fieldValue[i] = (uFTP != 0) ? AveragePower5sec*100/uFTP : 0;
+        	    fieldLabel[i] = "%FTP 5s";
+            	fieldFormat[i] = "power";
+			} else if (metric[i] == 77) {
+    	        fieldValue[i] = (uFTP != 0) ? AveragePower10sec*100/uFTP : 0;
+        	    fieldLabel[i] = "%FTP 10s";
+            	fieldFormat[i] = "power";
+			} else if (metric[i] == 78) {
+	            fieldValue[i] = (uFTP != 0) ? Averagepowerpersec*100/uFTP : 0;
+    	        fieldLabel[i] = "%FTP ..sec";
+        	    fieldFormat[i] = "power";
 			} else if (metric[i] == 58) {
 	            fieldValue[i] = mIntensityFactor;
     	        fieldLabel[i] = "IF";
@@ -614,7 +712,7 @@ class CiqView extends ExtramemView {
 	        		if ( counter == 3) {
     	    			dc.drawText(xx, y, Graphics.FONT_NUMBER_HOT, fTimer, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
         			} else {	
-        				dc.drawText(xx, y, Graphics.FONT_NUMBER_MEDIUM, fTimer, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
+        				dc.drawText(xx, y, Garminfont, fTimer, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
         			}
         		}
         	}
@@ -623,7 +721,7 @@ class CiqView extends ExtramemView {
         		if ( counter == 3) {
 	        		dc.drawText(x, y, Graphics.FONT_NUMBER_HOT, fieldvalue, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
     	    	} else {
-        			dc.drawText(x, y, Graphics.FONT_NUMBER_MEDIUM, fieldvalue, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
+        			dc.drawText(x, y, Garminfont, fieldvalue, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 				}
         	}
         }
@@ -667,8 +765,8 @@ class CiqView extends ExtramemView {
 				dc.drawText(120, 135, Graphics.FONT_MEDIUM,"The end", Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 			}
 			Toybox.Attention.vibrate(vibrateData);
-			Attention.playTone(Attention.TONE_LOUD_BEEP);
-			Attention.playTone(Attention.TONE_KEY);
+			Attention.playTone(Attention.TONE_ALERT_LO);
+			Attention.playTone(Attention.TONE_ALERT_HI);
 		} else if (oldmWorkoutstepNumber > 17 ) {
 			dc.drawText(120, 135, Graphics.FONT_MEDIUM,"The end", Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 			TheEnd = true;
