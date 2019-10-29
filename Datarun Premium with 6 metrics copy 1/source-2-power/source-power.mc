@@ -121,7 +121,7 @@ class PowerView extends CiqView {
     				}
     			} 
 			 }
-			 
+			  
 		}		
 		var i = 0; 
 	    for (i = 1; i < 7; ++i) {	    
