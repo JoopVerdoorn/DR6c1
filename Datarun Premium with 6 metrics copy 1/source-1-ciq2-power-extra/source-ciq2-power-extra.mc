@@ -61,6 +61,8 @@ class CiqView extends ExtramemView {
     var Power8 									= 0;
     var Power9 									= 0;
     var Power10									= 0;
+    var redTextwidthDisplay						=120;
+	var redTextheightDisplay					=135;
 		
     function initialize() {
         ExtramemView.initialize();
@@ -79,6 +81,8 @@ class CiqView extends ExtramemView {
 			if (metric[i] == 57 or metric[i] == 58 or metric[i] == 59) {
 				rolavPowmaxsecs = (rolavPowmaxsecs < 30) ? 30 : rolavPowmaxsecs;
 			}
+		}
+		
 		if (ID0 == 3588 or ID0 == 3832 or ID0 == 3624 or ID0 == 3952 or ID0 == 3762 or ID0 == 3962 or ID0 == 3761 or ID0 == 3961 or ID0 == 3757 or ID0 == 3931 or ID0 == 3758 or ID0 == 3932 or ID0 == 3759 or ID0 == 3959 or ID0 == 3798 or ID0 == 4023 or ID0 == 3799 or ID0 == 4024) {
 			Garminfont = Ui.loadResource(Rez.Fonts.Garmin1);		
 		} else if (ID0 == 3801 or ID0 == 4026 ) {
@@ -86,6 +90,13 @@ class CiqView extends ExtramemView {
 		} else if (ID0 == 3802 or ID0 == 4027 ) {
 			Garminfont = Ui.loadResource(Rez.Fonts.Garmin3);
 		}
+		
+		if (ID0 == 3801 or ID0 == 4026 ) {  //! Fenix 6 pro red notification text geometrie
+			redTextwidthDisplay=130;
+			redTextheightDisplay=146;
+		} else if (ID0 == 3802 or ID0 == 4027 ) {     //! Fenix 6x pro red notification text geometrie
+			redTextwidthDisplay=140;
+			redTextheightDisplay=158;
 		}		
 		
 		//!Workout variables setup
@@ -425,9 +436,9 @@ class CiqView extends ExtramemView {
     	    	Temp = (mWorkoutAmount[mWorkoutstepNumber].toNumber() != 0 ) ? (mWorkoutAmount[mWorkoutstepNumber].toNumber()).toLong() : 0;
         		fieldvalue =(Temp /3600 % 60).format("%02d") + ":" +  (Temp /60 % 60).format("%02d") + ":" + (Temp % 60).format("%02d");			
 				if (mWorkoutType[1].equals("t")) {
-					dc.drawText(120, 135, Graphics.FONT_MEDIUM,  fieldvalue + " @ " + mWorkoutLzone[mWorkoutstepNumber].toNumber() + "-" + mWorkoutHzone[mWorkoutstepNumber].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);	
+					dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  fieldvalue + " @ " + mWorkoutLzone[mWorkoutstepNumber].toNumber() + "-" + mWorkoutHzone[mWorkoutstepNumber].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);	
 				} else if (mWorkoutType[1].equals("d")) {
-					dc.drawText(120, 135, Graphics.FONT_MEDIUM,  mWorkoutAmount[mWorkoutstepNumber].toNumber() + " met @ " + mWorkoutLzone[mWorkoutstepNumber].toNumber() + "-" + mWorkoutHzone[mWorkoutstepNumber].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);	
+					dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  mWorkoutAmount[mWorkoutstepNumber].toNumber() + " met @ " + mWorkoutLzone[mWorkoutstepNumber].toNumber() + "-" + mWorkoutHzone[mWorkoutstepNumber].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);	
 				}
 			} else if (jTimertime > 0){ 		
 				if (oldnextAlertType.equals("t")) {
@@ -442,10 +453,10 @@ class CiqView extends ExtramemView {
         					fieldvalue = mWorkoutAmount[oldmWorkoutstepNumber+1].toNumber();
         					WU = " " + workoutUnit;
         				}
-						dc.drawText(120, 135, Graphics.FONT_MEDIUM,  fieldvalue + WU + " @ " + mWorkoutLzone[oldmWorkoutstepNumber+1].toNumber() + "-" + mWorkoutHzone[oldmWorkoutstepNumber+1].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);				
+						dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  fieldvalue + WU + " @ " + mWorkoutLzone[oldmWorkoutstepNumber+1].toNumber() + "-" + mWorkoutHzone[oldmWorkoutstepNumber+1].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);				
 					  } else if (oldmWorkoutstepNumber == 18) {
 					    hideDiv = true;	
-					    dc.drawText(120, 135, Graphics.FONT_MEDIUM,  "Ending" , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);				
+					    dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  "Ending" , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);				
 					  }
 					}
 				}			
@@ -461,10 +472,10 @@ class CiqView extends ExtramemView {
         					fieldvalue = mWorkoutAmount[oldmWorkoutstepNumber+1].toNumber();
         					WU = " " + workoutUnit;
         				}
-						dc.drawText(120, 135, Graphics.FONT_MEDIUM,  fieldvalue + WU + " @ " + mWorkoutLzone[oldmWorkoutstepNumber+1].toNumber() + "-" + mWorkoutHzone[oldmWorkoutstepNumber+1].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
+						dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  fieldvalue + WU + " @ " + mWorkoutLzone[oldmWorkoutstepNumber+1].toNumber() + "-" + mWorkoutHzone[oldmWorkoutstepNumber+1].toNumber() , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 					  } else if (oldmWorkoutstepNumber == 18){
 					    hideDiv = true;	
-					    dc.drawText(120, 135, Graphics.FONT_MEDIUM,  "Ending" , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);				
+					    dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  "Ending" , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);				
 					  }
 					}
 				}	
@@ -760,15 +771,15 @@ class CiqView extends ExtramemView {
 		hideDiv = true;
 		if (oldmWorkoutstepNumber < 18 ) {
 			if (mWorkoutAmount[oldmWorkoutstepNumber].equals("0000") == false) { 
-				dc.drawText(120, 135, Graphics.FONT_MEDIUM,  "Next step" , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
+				dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,  "Next step" , Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 			} else { 
-				dc.drawText(120, 135, Graphics.FONT_MEDIUM,"The end", Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
+				dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,"The end", Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 			}
 			Toybox.Attention.vibrate(vibrateData);
 			Attention.playTone(Attention.TONE_ALERT_LO);
 			Attention.playTone(Attention.TONE_ALERT_HI);
 		} else if (oldmWorkoutstepNumber > 17 ) {
-			dc.drawText(120, 135, Graphics.FONT_MEDIUM,"The end", Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
+			dc.drawText(redTextwidthDisplay, redTextheightDisplay, Graphics.FONT_MEDIUM,"The end", Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
 			TheEnd = true;
 		}
 		dc.setColor(mColourFont, Graphics.COLOR_TRANSPARENT);

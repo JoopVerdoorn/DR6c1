@@ -37,9 +37,11 @@ class DeviceView extends PowerView {
         //! Top vertical divider
         dc.drawLine(139, 34,  139, 107);
 
-        //! Centre vertical divider
-        dc.drawLine(191, 107,  191, 182);
-
+        //! Centre vertical dividers. Don't display dividers, if there is a workout notification
+		if (hideDiv == false) {
+	        dc.drawLine(191, 107,  191, 182);
+		}
+		
         //! Bottom vertical divider
         dc.drawLine(139, 182, 139, 256);
         

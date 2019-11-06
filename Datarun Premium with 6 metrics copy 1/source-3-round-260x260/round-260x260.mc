@@ -37,8 +37,10 @@ class DeviceView extends PowerView {
         //! Top vertical divider
         dc.drawLine(129, 30,  129, 100);
 
-        //! Centre vertical divider
-        dc.drawLine(178, 100,  178, 169);
+        //! Centre vertical dividers. Don't display dividers, if there is a workout notification
+		if (hideDiv == false) {
+	        dc.drawLine(178, 100,  178, 169);
+	    }
 
         //! Bottom vertical divider
         dc.drawLine(129, 169, 129, 237);
@@ -71,14 +73,7 @@ class DeviceView extends PowerView {
 	    		Formatting(dc,i,fieldValue[i],fieldFormat[i],fieldLabel[i],"183,191,192,131,187,170,225");
 	       	}      	
 		}
-		
-//!		if (jTimertime == 0) {
-//!	    	if (ID0 != 3624 and ID0 != 3588 and ID0 != 3762 and ID0 != 3761 and ID0 != 3757 and ID0 != 3758 and ID0 != 3759) {
-//!		    	dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-//!				dc.drawText(120, 160, Graphics.FONT_MEDIUM, strTime, Graphics.TEXT_JUSTIFY_CENTER);
-//!		    }
-//!		}
-		
+				
 		//! Bottom battery indicator
 	 	var stats = Sys.getSystemStats();
 		var pwr = stats.battery;

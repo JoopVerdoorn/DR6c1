@@ -584,10 +584,18 @@ class ExtramemView extends DatarunpremiumView {
 		}
 		
 		if (jTimertime == 0) {
-        	var myTime = Toybox.System.getClockTime(); 
-	    	var strTime = myTime.hour.format("%02d") + ":" + myTime.min.format("%02d");
-	    	dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(120, 160, Graphics.FONT_MEDIUM, strTime, Graphics.TEXT_JUSTIFY_CENTER);
+	    	if (ID0 != 3801 ) {
+	    	 	if (ID0 != 4026 ) {
+	    	 		if (ID0 != 3802 ) {
+	    	 			if (ID0 != 4027 ) {			
+				        	var myTime = Toybox.System.getClockTime(); 
+		    				var strTime = myTime.hour.format("%02d") + ":" + myTime.min.format("%02d");
+				    		dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+							dc.drawText(120, 160, Graphics.FONT_MEDIUM, strTime, Graphics.TEXT_JUSTIFY_CENTER);
+						}
+					}
+				}
+			}
 		}
 	   }		
 	}
