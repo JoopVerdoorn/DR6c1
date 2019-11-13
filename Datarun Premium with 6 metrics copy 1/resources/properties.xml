@@ -8,7 +8,7 @@
     	<font id="Garmin6" filename="fonts/Roadway85-alleencijfers.fnt" antialias="true"/>
 	</fonts>
   <properties>
-    <property id="pAppversion" type="string">2.20f</property>
+    <property id="pAppversion" type="string">2.20g</property>
     <property id="pUpperLeftMetric" type="number">0</property>
     <property id="pUpperRightMetric" type="number">4</property>
     <property id="pMiddleLeftMetric" type="number">45</property>    
