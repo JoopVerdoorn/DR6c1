@@ -1,31 +1,14 @@
 using Toybox.WatchUi as Ui;
-using Toybox.Application.Storage;
-using Toybox.Background;
-using Toybox.Communications;
-using Toybox.System;
 
 class DatarunPremiumwith6metricscopy1App extends Toybox.Application.AppBase {
-    hidden var temp;
     function initialize() {
         AppBase.initialize();
     }
 
     //! Return the initial view of your application here
     function getInitialView() {
-        if(Toybox.System has :ServiceDelegate) {
-			Background.registerForTemporalEvent(new Time.Duration(5 * 60));
-		}
-   		return [ new DeviceView() ];
-	}
-
-	function onBackgroundData(data) {
-		temp=data;
-		Storage.setValue("mytemp", temp);	
-	}
-
-	function getServiceDelegate(){
-		return [new TempBgServiceDelegate()];
-	}
+        return [ new DeviceView() ];  
+    }
 }
 
 class DatarunpremiumView extends Ui.DataField {
@@ -125,7 +108,7 @@ class DatarunpremiumView extends Ui.DataField {
     	 metric[3]   	= mApp.getProperty("pMiddleLeftMetric");
     	 metric[4] 		= mApp.getProperty("pMiddleRightMetric");    
     	 metric[5]		= mApp.getProperty("pBottomLeftMetric");
-         metric[6]   	= mApp.getProperty("pBottomRightMetric"); 
+         metric[6]   	= mApp.getProperty("pBottomRightMetric");     
          uRoundedPace        = mApp.getProperty("pRoundedPace");
          uBacklight          = mApp.getProperty("pBacklight");
          umyNumber			 = mApp.getProperty("myNumber");
@@ -136,7 +119,7 @@ class DatarunpremiumView extends Ui.DataField {
          uETAfromLap		 = mApp.getProperty("pETAfromLap");
          var uHrZones = UserProfile.getHeartRateZones(UserProfile.getCurrentSport());
          var uCCnumber	     = mApp.getProperty("pCCnumber");
-
+          	 
         if (System.getDeviceSettings().paceUnits == System.UNIT_STATUTE) {
             unitP = 1609.344;
         }
